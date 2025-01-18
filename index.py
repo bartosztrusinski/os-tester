@@ -28,10 +28,14 @@ def get_system_info():
 
 def get_bios_version():
     try:
-        result = subprocess.check_output(['wmic', 'bios', 'get', 'SMBIOSBIOSVersion'], universal_newlines=True)
-        return result.strip().split('\n')[1]
-    except Exception:
-        return "BIOS version could not be determined."
+        result = subprocess.check_output(
+            ['powershell', '-Command', '(Get-WmiObject Win32_BIOS).SMBIOSBIOSVersion'],
+            universal_newlines=True
+        )
+        return f"BIOS version: {result.strip()}"
+    except Exception as e:
+        return f"BIOS version could not be determined: {e}"
+
 
 def get_host_name():
     return f"Host Name: {socket.gethostname()}"
