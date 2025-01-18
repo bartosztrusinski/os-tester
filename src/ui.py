@@ -17,7 +17,6 @@ class MyTestApp(QWidget):
         self.text_view.setReadOnly(True)
         self.layout.addWidget(self.text_view)
 
-        # Buttons
         self.add_button("Get IPv4 Info", get_ipv4_info)
         self.add_button("Check Proxy", get_proxy_info)
         self.add_button("System Info", get_system_info)
