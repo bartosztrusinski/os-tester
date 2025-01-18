@@ -6,6 +6,7 @@ import psutil
 import subprocess
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QPushButton
 from PyQt5.QtCore import QProcess
+from urllib.parse import urlparse
 
 def get_ipv4_info():
     system = platform.system()
