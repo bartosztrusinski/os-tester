@@ -1,5 +1,6 @@
 import sys
 import os
+import platform
 import socket
 import psutil
 import subprocess
@@ -20,10 +21,10 @@ def get_proxy_info():
     return "No proxy configured."
 
 def get_system_info():
-    uname = os.uname()
+    uname = platform.uname()
     cores = psutil.cpu_count(logical=True)
     ram = round(psutil.virtual_memory().total / (1024 ** 3), 2)
-    return f"System: {uname.sysname} {uname.release}, {uname.machine}\nCores: {cores}\nRAM: {ram} GB"
+    return f"System: {uname.system} {uname.release}, {uname.machine}\nCores: {cores}\nRAM: {ram} GB"
 
 def get_bios_version():
     try:
