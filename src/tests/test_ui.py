@@ -89,3 +89,19 @@ def test_window_title(app):
 def test_button_size(app):
     button = app.layout.itemAt(1).widget()
     assert button.size() == QSize(200, 50)
+
+def test_button_click_with_no_action(app, qtbot):
+    button = QPushButton("No Action Button")
+    app.layout.addWidget(button)
+    qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
+    text_view_content = app.text_view.toPlainText()
+    assert "No Action Button clicked" not in text_view_content
+
+def test_invalid_function_in_button(app, qtbot, monkeypatch):
+    def mock_invalid_function():
+        raise ValueError("Invalid function called")
+    monkeypatch.setattr("modules.system_info.get_system_info", mock_invalid_function)
+    button = app.layout.itemAt(2).widget()
+    qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
+    text_view_content = app.text_view.toPlainText()
+    assert "Invalid function called" in text_view_content
