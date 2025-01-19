@@ -1,6 +1,7 @@
 import platform
 import socket
 import psutil
+import subprocess
 
 def get_ipv4_info():
     system = platform.system()
@@ -18,9 +19,18 @@ def get_ipv4_info():
                             else:
                                 ip_type = "Dynamic"
                     except FileNotFoundError:
-                        ip_type = "Unknown (file not found)"
+                        ip_type = "Dynamic"
                 elif system == "Windows":
                     ip_type = "Dynamic" if addr.netmask != "255.255.255.255" else "Static"
+                elif system == "Darwin":
+                    try:
+                        result = subprocess.check_output(['ifconfig', interface], universal_newlines=True)
+                        if "inet " in result:
+                            ip_type = "Static"
+                        else:
+                            ip_type = "Dynamic"
+                    except subprocess.CalledProcessError:
+                        ip_type = "Unknown (error checking IP)"
                 else:
                     ip_type = "Unknown (platform not supported)"
 
