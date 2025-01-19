@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 from modules.system_info import get_system_info
 from modules.host_info import get_host_name
@@ -29,7 +29,7 @@ def main():
     app = QApplication(sys.argv)
     window = MyTestApp()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()
