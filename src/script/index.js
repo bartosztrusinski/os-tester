@@ -1,19 +1,46 @@
-import { exec } from 'child_process';
 import chalk from 'chalk';
+import path from 'path';
+import { exec } from 'child_process';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
-const APP_PATH = 'node_modules/.bin/app.exe';
+dotenv.config();
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const APP_PATH = path.join(currentDir, '..', '..', 'main.exe');
+
+const helpExpected = [
+  'button1: Get IPv4 Info',
+  'button2: Check Proxy',
+  'button3: System Info',
+  'button4: BIOS Version',
+  'button5: Host Name',
+].join('\n');
 
 const commands = [
-  { args: '--help', expected: 'Available commands:' },
-  { args: '--version', expected: '1.0.0' },
-  { args: '--button1', expected: 'Button 1 clicked' },
-  { args: '--button2', expected: 'Button 2 clicked' },
-  { args: '--invalid', expected: 'Invalid command' },
+  { args: 'help', expected: helpExpected },
+  { args: 'button1', expected: process.env.BUTTON1_EXPECTED },
+  { args: 'button2', expected: process.env.BUTTON2_EXPECTED },
+  { args: 'button3', expected: process.env.BUTTON3_EXPECTED },
+  { args: 'button4', expected: process.env.BUTTON4_EXPECTED },
+  { args: 'button5', expected: process.env.BUTTON5_EXPECTED },
+  {
+    args: 'invalid',
+    expected: "Invalid command. Use 'help' for a list of commands.",
+  },
 ];
+
+function normalize(str) {
+  return str
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/\n/g, ' ')
+    .trim();
+}
 
 const testCommand = (command) => {
   return new Promise((resolve, reject) => {
-    exec(`${APP_PATH} ${command.args}`, (error, stdout, stderr) => {
+    exec(`${APP_PATH} ${command.args}`, (error, stdout) => {
       if (error) {
         console.error(
           chalk.red(`Error while running: ${command.args}\n${error.message}`)
@@ -21,19 +48,16 @@ const testCommand = (command) => {
         return reject(error);
       }
 
-      const output = stdout.trim();
-      console.log(chalk.blue(`Testing: ${command.args}`));
-      console.log(chalk.yellow(`Expected result: ${command.expected}`));
-      console.log(chalk.green(`Actual result: ${output}`));
+      const output = stdout;
+      console.log(chalk.blue(`\nTesting: ${command.args}`));
+      console.log(chalk.yellow(`Expected result:\n${command.expected}`));
+      console.log(chalk.green(`Actual result:\n${output}`));
 
-      if (output.includes(command.expected)) {
-        console.log(chalk.green(`✓ Test ${command.args} passed\n`));
+      if (normalize(output) === normalize(command.expected)) {
+        console.log(chalk.green(`✓ Test ${command.args} passed`));
         resolve(true);
       } else {
-        console.error(chalk.red(`✗ Test ${command.args} failed\n`));
-        console.error(
-          chalk.red(`Expected: ${command.expected}, Received: ${output}`)
-        );
+        console.error(chalk.red(`✗ Test ${command.args} failed`));
         resolve(false);
       }
     });
