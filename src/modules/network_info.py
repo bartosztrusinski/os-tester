@@ -14,7 +14,8 @@ def get_ipv4_info():
                 if system == "Linux":
                     try:
                         with open('/etc/network/interfaces', 'r') as file:
-                            if ip_address in file.read():
+                            file_content = file.read()
+                            if f"iface {interface} inet static" in file_content:
                                 ip_type = "Static"
                             else:
                                 ip_type = "Dynamic"
