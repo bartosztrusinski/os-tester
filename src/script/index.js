@@ -67,13 +67,23 @@ const testCommand = (command) => {
 (async () => {
   console.log(chalk.bold('Starting automated command tests...'));
 
+  let passedTests = 0;
+  const totalTests = commands.length;
+
   for (const command of commands) {
     try {
-      await testCommand(command);
+      const result = await testCommand(command);
+      if (result) {
+        passedTests += 1;
+      }
     } catch (error) {
       console.error(chalk.red(`Error during test: ${command.args}`));
     }
   }
 
-  console.log(chalk.bold.green('\nAutomated command testing completed.'));
+  console.log(
+    chalk.bold.green(
+      `\nAutomated command testing completed. ${passedTests}/${totalTests} tests passed.`
+    )
+  );
 })();
