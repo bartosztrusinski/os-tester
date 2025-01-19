@@ -1,11 +1,11 @@
 import sys
 from PyQt6.QtWidgets import QApplication
 
-from modules.system_info import get_system_info
-from modules.host_info import get_host_name
-from modules.bios_info import get_bios_version
 from modules.network_info import get_ipv4_info
 from modules.proxy_info import get_proxy_info
+from modules.system_info import get_system_info
+from modules.bios_info import get_bios_version
+from modules.host_info import get_host_name
 from ui import MyTestApp
 
 def main():
