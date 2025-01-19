@@ -10,6 +10,8 @@ def get_bios_version():
                 ['powershell', '-Command', '(Get-WmiObject Win32_BIOS).SMBIOSBIOSVersion'],
                 universal_newlines=True
             )
+            if result.strip() == "":
+                return "BIOS version could not be determined"
             return f"BIOS version: {result.strip()}"
 
         elif system == "Linux":
@@ -19,7 +21,7 @@ def get_bios_version():
             )
             for line in result.splitlines():
                 if "Version" in line:
-                    return f"BIOS version: {line.strip()}"
+                    return f"BIOS version: {line.split(':')[1].strip()}"
             return "BIOS version could not be determined"
 
         elif system == "Darwin":
